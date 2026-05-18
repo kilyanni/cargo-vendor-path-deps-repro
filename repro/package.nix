@@ -9,7 +9,5 @@ rustPlatform.buildRustPackage {
 
   src = ./.;
 
-  # Run `nix build` once with `lib.fakeHash` to surface the expected hash,
-  # then paste it back here.
-  cargoHash = lib.fakeHash;
+  cargoHash = "sha256-lala38juWLRikpJM+mI6/pjVS2QV+79xdhjpgnCyyZU=";
 }

@@ -29,22 +29,28 @@ hitting ENOENT on the now-broken monorepo paths.
 
 ## Reproducing
 
-From `repro/`:
+`Cargo.lock`, `flake.lock`, and a populated `cargoHash` are already committed,
+so from `repro/`:
 
-1. Generate a lock file (needs network — fetches crate-a from this repo):
-   ```
-   cargo generate-lockfile
-   ```
-2. Run the Nix build:
-   ```
-   nix build .
-   ```
-   The first invocation will fail with a `cargoHash` mismatch — paste the
-   suggested hash into `repro/package.nix` and rerun. The second run fails
-   with the actual repro:
-   ```
-   error: failed to read `/build/repro-0.1.0-vendor/source-git-0/crate-a-0.1.0/../crate-b/Cargo.toml`
-   ```
+```
+nix build .
+```
+
+fails with:
+
+```
+error: failed to get `crate-b` as a dependency of package `crate-a v0.1.0 (/build/repro-0.1.0-vendor/source-git-0/crate-a-0.1.0)`
+    ... which satisfies path dependency `crate-a` of package `wbuild-stub v0.1.0 (.../wbuild)`
+Caused by:
+  failed to read `/build/repro-0.1.0-vendor/source-git-0/crate-b/Cargo.toml`
+Caused by:
+  No such file or directory (os error 2)
+```
+
+The vendored crates are at `source-git-0/crate-a-0.1.0/` and
+`source-git-0/crate-b-0.1.0/`; cargo follows the literal `../crate-b`
+declaration in the vendored `crate-a/Cargo.toml` to `source-git-0/crate-b`,
+which doesn't exist.
 
 ## Why the outer `cargo build` succeeds but the nested one fails
 
