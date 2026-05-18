@@ -1,0 +1,11 @@
+[package]
+name = "crate-a"
+version = "0.1.0"
+edition = "2021"
+
+# The path declaration here is the one that gets broken after
+# fetchCargoVendor flattens the vendor: crate-a ends up at
+# `source-git-0/crate-a-0.1.0/` and crate-b at `source-git-0/crate-b-0.1.0/`,
+# so `../crate-b` no longer resolves.
+[dependencies]
+crate-b = { path = "../crate-b" }

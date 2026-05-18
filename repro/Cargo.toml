@@ -1,0 +1,10 @@
+[package]
+name = "repro"
+version = "0.1.0"
+edition = "2021"
+
+# Replace `USER/REPO` with the github path you push this repo to, and the
+# `rev = ...` with the commit hash of the push. Then `cargo generate-lockfile`
+# in this dir.
+[dependencies]
+crate-a = { git = "https://github.com/USER/REPO", rev = "REPLACE_WITH_COMMIT_HASH" }
