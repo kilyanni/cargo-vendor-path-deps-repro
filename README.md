@@ -27,22 +27,21 @@ hitting ENOENT on the now-broken monorepo paths.
   which spawns the nested cargo, which traverses crate-a as a path source
   and follows the broken `path = "../crate-b"` to ENOENT.
 
-## Setup
+## Reproducing
 
-1. Push this repo to a public git host (e.g. github).
-2. Edit `repro/Cargo.toml` — replace the `git = "..."` URL and `rev = "..."`
-   commit hash with your push.
-3. From `repro/`, generate a lock file with network access:
+From `repro/`:
+
+1. Generate a lock file (needs network — fetches crate-a from this repo):
    ```
    cargo generate-lockfile
    ```
-4. Attempt the Nix build:
+2. Run the Nix build:
    ```
    nix build .
    ```
-   First run will fail with a hash mismatch — paste the suggested hash into
-   `repro/package.nix` (`cargoHash = ...`) and rerun. The second run should
-   then fail with the actual repro:
+   The first invocation will fail with a `cargoHash` mismatch — paste the
+   suggested hash into `repro/package.nix` and rerun. The second run fails
+   with the actual repro:
    ```
    error: failed to read `/build/repro-0.1.0-vendor/source-git-0/crate-a-0.1.0/../crate-b/Cargo.toml`
    ```
